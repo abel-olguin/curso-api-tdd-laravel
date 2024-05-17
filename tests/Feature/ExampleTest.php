@@ -2,18 +2,24 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     */
-    public function test_the_application_returns_a_successful_response(): void
+    #[Test]
+    public function hello_world_route_should_return_status_success(): void
     {
-        $response = $this->get('/');
+        #teniendo
+        // teniendo unas credenciales
 
-        $response->assertStatus(200);
+        #haciendo
+        $response = $this->get('api/hello-world');
+
+        #esperando
+        $response->assertJson(['msg' => 'Hello World!']);
+        $response->assertJsonStructure(['msg']);
     }
 }

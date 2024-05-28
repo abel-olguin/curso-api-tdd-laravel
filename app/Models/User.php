@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\ResetPasswordNotification;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -42,6 +44,12 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return ['message' => 'hola mundo'];
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $url = 'http://front.app/reset-password?token=' . $token . '&email=' . $this->email;
+        $this->notify(new ResetPasswordNotification($url));
     }
 
     /**

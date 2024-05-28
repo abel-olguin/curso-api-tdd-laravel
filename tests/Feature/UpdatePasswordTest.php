@@ -78,6 +78,7 @@ class UpdatePasswordTest extends TestCase
         $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['old_password']]);
     }
 
+
     #[Test]
     public function password_must_be_required(): void
     {

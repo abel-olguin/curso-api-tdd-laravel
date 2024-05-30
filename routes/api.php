@@ -8,3 +8,6 @@ Route::put('/profile', [\App\Http\Controllers\Auth\ProfileController::class, 'up
 Route::put('/password', [\App\Http\Controllers\Auth\UpdatePasswordController::class, 'update']);
 Route::post('/reset-password', [\App\Http\Controllers\Auth\ResetPasswordController::class, 'send']);
 Route::put('/reset-password', [\App\Http\Controllers\Auth\ResetPasswordController::class, 'resetPassword']);
+
+# restaurants
+Route::apiResource('restaurants', \App\Http\Controllers\RestaurantController::class);

@@ -1,22 +1,15 @@
 <?php
 
-namespace Tests\Feature;
+namespace Auth;
 
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
 {
     use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->seed(UserSeeder::class);
-    }
 
     #[Test]
     public function an_existing_user_can_login(): void
@@ -33,7 +26,6 @@ class LoginTest extends TestCase
         $response->assertJsonStructure(['data' => ['token']]);
     }
 
-
     #[Test]
     public function a_non_existing_user_cannot_login(): void
     {
@@ -47,7 +39,6 @@ class LoginTest extends TestCase
         $response->assertStatus(401);
         $response->assertJsonFragment(['status' => 401, 'message' => 'Unauthorized']);
     }
-
 
     #[Test]
     public function email_must_be_required(): void
@@ -92,7 +83,6 @@ class LoginTest extends TestCase
         $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['email']]);
     }
 
-
     #[Test]
     public function password_must_be_required(): void
     {
@@ -120,5 +110,11 @@ class LoginTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['password']]);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(UserSeeder::class);
     }
 }

@@ -1,13 +1,11 @@
 <?php
 
-namespace Tests\Feature;
+namespace Auth;
 
 use App\Models\User;
 use App\Notifications\ResetPasswordNotification;
 use Database\Seeders\UserSeeder;
-use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\Test;

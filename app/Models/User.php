@@ -36,6 +36,11 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
+    public function restaurants()
+    {
+        return $this->hasMany(Restaurant::class);
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

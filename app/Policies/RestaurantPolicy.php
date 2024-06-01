@@ -37,7 +37,7 @@ class RestaurantPolicy
      */
     public function update(User $user, Restaurant $restaurant): bool
     {
-        //
+        return $user->id === $restaurant->user_id;
     }
 
     /**
@@ -45,7 +45,7 @@ class RestaurantPolicy
      */
     public function delete(User $user, Restaurant $restaurant): bool
     {
-        //
+        return $user->id === $restaurant->user_id;
     }
 
     /**

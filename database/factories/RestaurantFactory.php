@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,7 +19,7 @@ class RestaurantFactory extends Factory
     {
         $title = $this->faker->words(3, true);
         return [
-            'user_id'     => 1,
+            'user_id'     => fn() => User::factory()->create(),
             'name'        => $title,
             'slug'        => str($title)->slug(),
             'description' => $this->faker->text(),

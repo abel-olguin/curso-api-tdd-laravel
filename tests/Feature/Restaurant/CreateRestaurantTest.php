@@ -48,6 +48,18 @@ class CreateRestaurantTest extends TestCase
     }
 
     #[Test]
+    public function a_unauthenticated_user_cannot_create_a_restaurant(): void
+    {
+        //$this->withoutExceptionHandling();
+        # teniendo
+        #haciendo
+        $response = $this->postJson("{$this->apiBase}/restaurants");
+
+        #esperando
+        $response->assertStatus(401); //created
+    }
+    
+    #[Test]
     public function name_must_be_required(): void
     {
         # teniendo

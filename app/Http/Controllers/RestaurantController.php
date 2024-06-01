@@ -6,6 +6,7 @@ use App\Http\Resources\RestaurantResource;
 use App\Models\Restaurant;
 use App\Http\Requests\StoreRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
+use Illuminate\Support\Facades\Gate;
 
 class RestaurantController extends Controller
 {
@@ -14,7 +15,10 @@ class RestaurantController extends Controller
      */
     public function index()
     {
-        //
+        $restaurants = auth()->user()->restaurants()->get();
+        return jsonResponse([
+            'restaurants' => RestaurantResource::collection($restaurants),
+        ]);
     }
 
     /**
@@ -41,7 +45,11 @@ class RestaurantController extends Controller
      */
     public function update(UpdateRestaurantRequest $request, Restaurant $restaurant)
     {
-        //
+        Gate::authorize('update', $restaurant);
+        $restaurant->update($request->validated());
+        return jsonResponse(data: [
+            'restaurant' => RestaurantResource::make($restaurant),
+        ]);
     }
 
     /**
@@ -49,6 +57,8 @@ class RestaurantController extends Controller
      */
     public function destroy(Restaurant $restaurant)
     {
-        //
+        Gate::authorize('delete', $restaurant);
+        $restaurant->delete();
+        return jsonResponse();
     }
 }

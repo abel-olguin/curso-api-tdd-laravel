@@ -21,7 +21,7 @@ class RestaurantPolicy
      */
     public function view(User $user, Restaurant $restaurant): bool
     {
-        //
+        return $user->id === $restaurant->user_id;
     }
 
     /**

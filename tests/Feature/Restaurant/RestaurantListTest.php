@@ -18,13 +18,12 @@ class RestaurantListTest extends TestCase
     public function an_authenticated_user_must_see_their_restaurants(): void
     {
         $response = $this->apiAs(User::find(1), 'get', "{$this->apiBase}/restaurants");
-
         $response->assertStatus(200);
-        $response->assertJsonCount(10, 'data.restaurants');
+        $response->assertJsonCount(15, 'data.restaurants');
     }
 
     #[Test]
-    public function a_unauthenticated_user_cannot_edit_a_restaurant(): void
+    public function a_unauthenticated_user_cannot_see_the_list_of_restaurants(): void
     {
         //$this->withoutExceptionHandling();
         # teniendo
@@ -49,7 +48,7 @@ class RestaurantListTest extends TestCase
     {
         parent::setUp();
         $this->seed(UserSeeder::class);
-        $this->restaurants = Restaurant::factory()->count(10)->create([
+        $this->restaurants = Restaurant::factory()->count(15)->create([
             'user_id' => 1,
         ]);
     }

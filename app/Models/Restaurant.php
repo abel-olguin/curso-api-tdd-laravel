@@ -10,4 +10,9 @@ class Restaurant extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function plates()
+    {
+        return $this->hasMany(Plate::class);// restaurant_id
+    }
 }

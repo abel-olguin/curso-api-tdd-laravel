@@ -12,3 +12,8 @@ Route::put('/reset-password', [\App\Http\Controllers\Auth\ResetPasswordControlle
 # restaurants
 Route::middleware('auth:api')
      ->apiResource('restaurants', \App\Http\Controllers\RestaurantController::class);
+
+# plates
+Route::middleware('auth:api')
+     ->as('restaurants')
+     ->apiResource('{restaurant:id}/plates', \App\Http\Controllers\PlateController::class);

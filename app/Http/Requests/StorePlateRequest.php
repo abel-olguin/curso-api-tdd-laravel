@@ -11,7 +11,7 @@ class StorePlateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return auth()->check();
     }
 
     /**
@@ -22,7 +22,9 @@ class StorePlateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'        => 'required',
+            'price'       => 'required',
+            'description' => 'required',
         ];
     }
 }

@@ -20,7 +20,7 @@ class PlateListTest extends TestCase
     #[Test]
     public function an_authenticated_user_must_see_their_plates(): void
     {
-        $response = $this->apiAs(User::find(1), 'get', "{$this->apiBase}/{$this->restaurant->id}/plates");
+        $response = $this->apiAs(User::find(1), 'get', "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates");
         $response->assertStatus(200);
         $response->assertJsonCount(15, 'data.plates');
         $response->assertJsonStructure([
@@ -41,7 +41,7 @@ class PlateListTest extends TestCase
         //$this->withoutExceptionHandling();
         # teniendo
         #haciendo
-        $response = $this->getJson("{$this->apiBase}/{$this->restaurant->id}/plates");
+        $response = $this->getJson("{$this->apiBase}/restaurants/{$this->restaurant->id}/plates");
 
         #esperando
         $response->assertStatus(401); //created
@@ -51,7 +51,7 @@ class PlateListTest extends TestCase
     public function an_authenticated_user_must_see_only_their_restaurants(): void
     {
         $user     = User::factory()->create();
-        $response = $this->apiAs($user, 'get', "{$this->apiBase}/{$this->restaurant->id}/plates");
+        $response = $this->apiAs($user, 'get', "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates");
 
         $response->assertStatus(403);
     }
@@ -59,7 +59,7 @@ class PlateListTest extends TestCase
     #[Test]
     public function a_user_must_see_their_paginated_plates(): void
     {
-        $response = $this->apiAs(User::find(1), 'get', "{$this->apiBase}/{$this->restaurant->id}/plates");
+        $response = $this->apiAs(User::find(1), 'get', "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates");
         $response->assertStatus(200);
         $response->assertJsonCount(15, 'data.plates');
         $response->assertJsonStructure([

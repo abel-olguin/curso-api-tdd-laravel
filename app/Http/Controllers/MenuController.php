@@ -34,24 +34,31 @@ class MenuController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Menu $menu)
+    public function show(Restaurant $restaurant, Menu $menu)
     {
-        //
+        Gate::authorize('view', $restaurant);
+        return jsonResponse(['menu' => MenuResource::make($menu)]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMenuRequest $request, Menu $menu)
+    public function update(UpdateMenuRequest $request, Restaurant $restaurant, Menu $menu)
     {
-        //
+        Gate::authorize('view', $restaurant);
+        $menu->update($request->only('name', 'description'));
+        $menu->plates()->sync($request->get('plate_ids'));
+        return jsonResponse(['menu' => MenuResource::make($menu)]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Menu $menu)
+    public function destroy(Restaurant $restaurant, Menu $menu)
     {
-        //
+        Gate::authorize('view', $restaurant);
+        $menu->plates()->sync([]);
+        $menu->delete();
+        return jsonResponse();
     }
 }

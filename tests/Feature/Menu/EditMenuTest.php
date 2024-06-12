@@ -1,7 +1,8 @@
 <?php
 
-namespace Tests\Feature\Menu;
+namespace Menu;
 
+use App\Models\Menu;
 use App\Models\Plate;
 use App\Models\Restaurant;
 use App\Models\User;
@@ -11,25 +12,27 @@ use Illuminate\Support\Collection;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-class CreateMenuTest extends TestCase
+class EditMenuTest extends TestCase
 {
     use RefreshDatabase;
 
     protected User       $user;
     protected Restaurant $restaurant;
     protected Collection $plates;
+    protected Menu       $menu;
 
     #[Test]
     public function an_authenticated_user_can_create_a_menu(): void
     {
         $this->withoutExceptionHandling();
         $data     = [
-            'name'        => 'menu name',
-            'description' => 'menu description',
+            'name'        => 'new menu name',
+            'description' => 'new menu description',
             'plate_ids'   => $this->plates->pluck('id'),
         ];
         $response =
-            $this->apiAs($this->user, 'post', "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus", $data);
+            $this->apiAs($this->user, 'put',
+                "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}", $data);
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'data' => [
@@ -42,6 +45,9 @@ class CreateMenuTest extends TestCase
             'message', 'errors', 'status'
         ]);
 
+        $response->assertJsonPath('data.menu.name', 'new menu name');
+        $response->assertJsonPath('data.menu.description', 'new menu description');
+
         $firstPlate = $this->plates->first();
 
         $response->assertJsonPath('data.menu.plates.0', [
@@ -50,23 +56,22 @@ class CreateMenuTest extends TestCase
             'price'       => (string)$firstPlate->price,
         ]);
 
-        $this->assertDatabaseHas('menus', [
+        $this->assertDatabaseMissing('menus', [
             'restaurant_id' => $this->restaurant->id,
-            'name'          => 'menu name',
-            'description'   => 'menu description',
+            'name'          => $this->restaurant->name,
+            'description'   => $this->restaurant->description,
         ]);
-
+        $response->assertJsonCount(15, 'data.menu.plates');
         foreach ($this->plates as $plate) {
             $this->assertDatabaseHas('menus_plates', [
                 'menu_id'  => 1,
                 'plate_id' => $plate->id,
             ]);
         }
-
     }
 
     #[Test]
-    public function a_unauthenticated_user_cannot_create_a_menu(): void
+    public function a_unauthenticated_user_cannot_edit_any_menu(): void
     {
         //$this->withoutExceptionHandling();
         $data     = [
@@ -75,8 +80,68 @@ class CreateMenuTest extends TestCase
             'plate_ids'   => $this->plates->pluck('id'),
         ];
         $response =
-            $this->postJson("{$this->apiBase}/restaurants/{$this->restaurant->id}/menus", $data);
+            $this->putJson("{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}", $data);
         $response->assertStatus(401);
+    }
+
+    #[Test]
+    public function a_user_can_add_a_new_menu_plate(): void
+    {
+        $this->withoutExceptionHandling();
+        $plate    = Plate::factory()->create(['restaurant_id' => $this->restaurant]);
+        $data     = [
+            'name'        => 'new menu name',
+            'description' => 'new menu description',
+            'plate_ids'   => [...$this->plates->pluck('id'), $plate->id],
+        ];
+        $response =
+            $this->apiAs($this->user, 'put',
+                "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}", $data);
+        $response->assertStatus(200);
+
+        $response->assertJsonCount(16, 'data.menu.plates');
+
+        $this->assertDatabaseHas('menus_plates', [
+            'menu_id'  => 1,
+            'plate_id' => $plate->id,
+        ]);
+        foreach ($this->plates as $plate) {
+            $this->assertDatabaseHas('menus_plates', [
+                'menu_id'  => 1,
+                'plate_id' => $plate->id,
+            ]);
+        }
+    }
+
+    #[Test]
+    public function a_user_can_remove_a_menu_plate(): void
+    {
+        $this->withoutExceptionHandling();
+        $plateIds = $this->plates->splice(0, 14)->pluck('id');
+        $data     = [
+            'name'        => 'new menu name',
+            'description' => 'new menu description',
+            'plate_ids'   => $plateIds,
+        ];
+        $response =
+            $this->apiAs($this->user, 'put',
+                "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}", $data);
+        $response->assertStatus(200);
+
+        $response->assertJsonCount(14, 'data.menu.plates');
+
+
+        foreach ($plateIds as $plateId) {
+            $this->assertDatabaseHas('menus_plates', [
+                'menu_id'  => 1,
+                'plate_id' => $plateId,
+            ]);
+        }
+
+        $this->assertDatabaseMissing('menus_plates', [
+            'menu_id'  => 1,
+            'plate_id' => $this->plates->last()->id,
+        ]);
     }
 
     #[Test]
@@ -91,7 +156,8 @@ class CreateMenuTest extends TestCase
 
         #haciendo
         $response =
-            $this->apiAs(User::find(1), 'post', "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus", $data);
+            $this->apiAs(User::find(1), 'put',
+                "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}", $data);
 
         $response->assertStatus(422);
         $response->assertJsonStructure(['errors' => ['name']]);
@@ -109,7 +175,8 @@ class CreateMenuTest extends TestCase
 
         #haciendo
         $response =
-            $this->apiAs(User::find(1), 'post', "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus", $data);
+            $this->apiAs(User::find(1), 'put',
+                "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}", $data);
 
         $response->assertStatus(422);
         $response->assertJsonStructure(['errors' => ['description']]);
@@ -127,7 +194,8 @@ class CreateMenuTest extends TestCase
 
         #haciendo
         $response =
-            $this->apiAs(User::find(1), 'post', "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus", $data);
+            $this->apiAs(User::find(1), 'put',
+                "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}", $data);
 
         $response->assertStatus(422);
         $response->assertJsonStructure(['errors' => ['plate_ids']]);
@@ -145,7 +213,8 @@ class CreateMenuTest extends TestCase
 
         #haciendo
         $response =
-            $this->apiAs(User::find(1), 'post', "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus", $data);
+            $this->apiAs(User::find(1), 'put',
+                "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}", $data);
         $response->assertStatus(422);
         $response->assertJsonStructure(['errors' => ['plate_ids.0']]);
     }
@@ -164,7 +233,8 @@ class CreateMenuTest extends TestCase
         #haciendo
         $user     = User::factory()->create();
         $response =
-            $this->apiAs($user, 'post', "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus", $data);
+            $this->apiAs($user, 'put', "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}",
+                $data);
         $response->assertStatus(403);
     }
 
@@ -183,7 +253,8 @@ class CreateMenuTest extends TestCase
 
         #haciendo
         $response =
-            $this->apiAs($this->user, 'post', "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus", $data);
+            $this->apiAs($this->user, 'put',
+                "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}", $data);
         $response->assertStatus(422);
         $response->assertJsonStructure(['errors' => ['plate_ids.0']]);
     }
@@ -196,5 +267,10 @@ class CreateMenuTest extends TestCase
         $this->plates     = Plate::factory()->count(15)->create([
             'restaurant_id' => $this->restaurant->id,
         ]);
+        $this->menu       = Menu::factory()
+                                ->hasAttached($this->plates)
+                                ->create([
+                                    'restaurant_id' => $this->restaurant->id,
+                                ]);
     }
 }

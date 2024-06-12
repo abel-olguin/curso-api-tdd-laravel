@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Restaurant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,9 @@ class MenuFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'restaurant_id' => fn() => Restaurant::factory()->create(),
+            'name'          => fake()->words(3, true),
+            'description'   => fake()->words(10, true),
         ];
     }
 }

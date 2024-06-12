@@ -12,8 +12,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('menus_plates', function (Blueprint $table) {
-            $table->foreignIdFor(Menu::class)->constrained();
-            $table->foreignIdFor(\App\Models\Plate::class)->constrained();
+            $table->foreignIdFor(Menu::class)->constrained();              //->cascadeOnDelete()
+            $table->foreignIdFor(\App\Models\Plate::class)->constrained(); //->cascadeOnDelete()
         });
     }
 

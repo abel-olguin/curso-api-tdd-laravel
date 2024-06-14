@@ -29,4 +29,11 @@ class UpdateMenuRequest extends FormRequest
             'description' => 'required',
         ];
     }
+
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'plate_ids' => array_unique($this->get('plate_ids')),
+        ]);
+    }
 }

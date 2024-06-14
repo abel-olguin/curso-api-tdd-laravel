@@ -85,6 +85,22 @@ class EditMenuTest extends TestCase
     }
 
     #[Test]
+    public function menu_plates_should_not_be_duplicates(): void
+    {
+        $data     = [
+            'name'        => 'new menu name',
+            'description' => 'new menu description',
+            'plate_ids'   => [$this->plates->first()->id, $this->plates->first()->id],
+        ];
+        $response =
+            $this->apiAs($this->user, 'put',
+                "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$this->menu->id}", $data);
+
+        $this->assertDatabaseCount('menus_plates', 1);
+        $this->assertTrue(Menu::first()->plates()->count() == 1);
+    }
+
+    #[Test]
     public function a_user_can_add_a_new_menu_plate(): void
     {
         $this->withoutExceptionHandling();

@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-class DeletePlateTest extends TestCase
+class DeletePlateRelationsTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -32,25 +32,7 @@ class DeletePlateTest extends TestCase
             'message' => 'OK',
         ]);
         $this->assertDatabaseMissing('plates', ['id' => $this->plate->id]);
-    }
-
-    #[Test]
-    public function an_unauthenticated_user_cannot_delete_any_plates()
-    {
-        $response = $this->deleteJson(
-            "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates/{$this->plate->id}");
-
-        $response->assertStatus(401);
-    }
-
-    #[Test]
-    public function an_authenticated_user_can_only_delete_their_plates(): void
-    {
-        //$this->withoutExceptionHandling();
-        $user     = User::factory()->create();
-        $response = $this->apiAs($user, 'delete',
-            "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates/{$this->plate->id}");
-        $response->assertStatus(403);
+        $this->assertDatabaseMissing('menus_plates', ['plate_id' => $this->plate->id]);
     }
 
     protected function setUp(): void
@@ -58,8 +40,8 @@ class DeletePlateTest extends TestCase
         parent::setUp();
         $this->user       = User::factory()->create();
         $this->restaurant = Restaurant::factory()->create(['user_id' => $this->user->id]);
-        $this->plate      =
-            Plate::factory()->create(['restaurant_id' => $this->restaurant->id]);
+        $this->plate      = Plate::factory()->hasAttached(Menu::factory())
+                                 ->create(['restaurant_id' => $this->restaurant->id]);
     }
 
 }

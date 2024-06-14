@@ -28,7 +28,7 @@ class PlateController extends Controller
      */
     public function store(StorePlateRequest $request, Restaurant $restaurant)
     {
-        Gate::authorize('view', $restaurant);
+
         $plate = $restaurant->plates()->create($request->validated());
         return jsonResponse(['plate' => PlateResource::make($plate)]);
     }
@@ -38,7 +38,7 @@ class PlateController extends Controller
      */
     public function show(Restaurant $restaurant, Plate $plate)
     {
-        Gate::authorize('view', $restaurant);
+
         return jsonResponse(['plate' => PlateResource::make($plate)]);
     }
 
@@ -47,7 +47,7 @@ class PlateController extends Controller
      */
     public function update(UpdatePlateRequest $request, Restaurant $restaurant, Plate $plate)
     {
-        Gate::authorize('view', $restaurant);
+
         $plate->update($request->validated());
         return jsonResponse(['plate' => PlateResource::make($plate->fresh())]);
     }
@@ -57,8 +57,7 @@ class PlateController extends Controller
      */
     public function destroy(Restaurant $restaurant, Plate $plate)
     {
-        Gate::authorize('view', $restaurant);
-        
+        $plate->menus()->sync([]);
         $plate->delete();
         return jsonResponse();
     }

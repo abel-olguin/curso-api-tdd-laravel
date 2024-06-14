@@ -9,16 +9,18 @@ Route::put('/password', [\App\Http\Controllers\Auth\UpdatePasswordController::cl
 Route::post('/reset-password', [\App\Http\Controllers\Auth\ResetPasswordController::class, 'send']);
 Route::put('/reset-password', [\App\Http\Controllers\Auth\ResetPasswordController::class, 'resetPassword']);
 
-# restaurants
-Route::middleware('auth:api')
-     ->apiResource('restaurants', \App\Http\Controllers\RestaurantController::class);
+Route::middleware('auth:api')->group(function () {
+    # restaurants
+    Route::apiResource('restaurants', \App\Http\Controllers\RestaurantController::class);
 
-# plates
-Route::middleware('auth:api')
-     ->as('restaurants')
-     ->apiResource('restaurants/{restaurant:id}/plates', \App\Http\Controllers\PlateController::class);
+    Route::middleware('can:view,restaurant')
+         ->as('restaurants')
+         ->prefix('restaurants/{restaurant:id}')
+         ->group(function () {
+             # plates
+             Route::apiResource('plates', \App\Http\Controllers\PlateController::class);
 
-# menus
-Route::middleware('auth:api')
-     ->as('restaurants')
-     ->apiResource('restaurants/{restaurant:id}/menus', \App\Http\Controllers\MenuController::class);
+             # menus
+             Route::apiResource('menus', \App\Http\Controllers\MenuController::class);
+         });
+});

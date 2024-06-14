@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Menu;
 
+use App\Models\Menu;
 use App\Models\Plate;
 use App\Models\Restaurant;
 use App\Models\User;
@@ -62,6 +63,24 @@ class CreateMenuTest extends TestCase
                 'plate_id' => $plate->id,
             ]);
         }
+
+    }
+
+    #[Test]
+    public function menu_plates_should_not_be_duplicates(): void
+    {
+        $this->withoutExceptionHandling();
+        $data     = [
+            'name'        => 'menu name',
+            'description' => 'menu description',
+            'plate_ids'   => [$this->plates->first()->id, $this->plates->first()->id],
+        ];
+        $response =
+            $this->apiAs($this->user, 'post', "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus", $data);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseCount('menus_plates', 1);
+        $this->assertTrue(Menu::first()->plates()->count() == 1);
 
     }
 

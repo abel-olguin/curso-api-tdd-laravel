@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Plate;
+use App\Models\Restaurant;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 

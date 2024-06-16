@@ -33,7 +33,7 @@ class ShowMenuTest extends TestCase
         $response->assertJsonStructure([
             'data' => [
                 'menu' => [
-                    'id', 'name', 'description', 'plates' => [
+                    'id', 'name', 'description', 'links', 'plates' => [
                         '*' => ['name', 'description', 'price']
                     ]
                 ]
@@ -41,6 +41,7 @@ class ShowMenuTest extends TestCase
             'message', 'errors', 'status'
         ]);
 
+        $response->assertJsonPath('data.menu.links.parent', route('restaurants.show', $this->restaurant));
         $response->assertJsonPath('data.menu.name', $this->menu->name);
         $response->assertJsonPath('data.menu.description', $this->menu->description);
 

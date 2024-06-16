@@ -19,6 +19,9 @@ class MenuResource extends JsonResource
             'restaurant_id' => $this->restaurant_id,
             'name'          => $this->name,
             'description'   => $this->description,
+            'links'         => [
+                'self' => route('restaurants.menus.index', $this->restaurant_id)
+            ],
         ];
     }
 }

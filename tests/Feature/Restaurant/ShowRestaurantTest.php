@@ -20,7 +20,7 @@ class ShowRestaurantTest extends TestCase
         $response = $this->apiAs(User::find(1), 'get', "{$this->apiBase}/restaurants/{$this->restaurant->id}");
         $response->assertStatus(200);
         $response->assertJsonStructure([
-            'data' => ['restaurant' => ['id', 'name', 'description', 'slug']],
+            'data' => ['restaurant' => ['id', 'name', 'description', 'slug', 'links']],
             'message', 'status', 'errors'
         ]);
 
@@ -30,7 +30,11 @@ class ShowRestaurantTest extends TestCase
                     'id'          => $this->restaurant->id,
                     'name'        => $this->restaurant->name,
                     'description' => $this->restaurant->description,
-                    'slug'        => $this->restaurant->slug
+                    'slug'        => $this->restaurant->slug,
+                    'links'       => [
+                        'plates' => route('restaurants.plates.index', $this->restaurant),
+                        'menus'  => route('restaurants.menus.index', $this->restaurant)
+                    ]
                 ]
             ],
         ]);

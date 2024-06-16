@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PlateCollection;
-use App\Http\Resources\PlateResource;
+use App\Http\Resources\PlateDetailResource;
 use App\Models\Plate;
 use App\Http\Requests\StorePlateRequest;
 use App\Http\Requests\UpdatePlateRequest;
@@ -19,7 +19,7 @@ class PlateController extends Controller
     {
 
         Gate::authorize('viewPlates', $restaurant);
-        $plates = $restaurant->plates()->paginate();
+        $plates = $restaurant->plates()->search()->paginate();
         return jsonResponse(new PlateCollection($plates));
     }
 
@@ -30,7 +30,7 @@ class PlateController extends Controller
     {
 
         $plate = $restaurant->plates()->create($request->validated());
-        return jsonResponse(['plate' => PlateResource::make($plate)]);
+        return jsonResponse(['plate' => PlateDetailResource::make($plate)]);
     }
 
     /**
@@ -39,7 +39,7 @@ class PlateController extends Controller
     public function show(Restaurant $restaurant, Plate $plate)
     {
 
-        return jsonResponse(['plate' => PlateResource::make($plate)]);
+        return jsonResponse(['plate' => PlateDetailResource::make($plate)]);
     }
 
     /**
@@ -49,7 +49,7 @@ class PlateController extends Controller
     {
 
         $plate->update($request->validated());
-        return jsonResponse(['plate' => PlateResource::make($plate->fresh())]);
+        return jsonResponse(['plate' => PlateDetailResource::make($plate->fresh())]);
     }
 
     /**

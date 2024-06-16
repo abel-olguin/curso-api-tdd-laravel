@@ -17,7 +17,7 @@ class MenuController extends Controller
      */
     public function index(Restaurant $restaurant)
     {
-        $menu = $restaurant->menus()->paginate();
+        $menu = $restaurant->menus()->search()->paginate();
 
         return jsonResponse(new MenuCollection($menu));
     }

@@ -34,6 +34,7 @@ class ShowPlateTest extends TestCase
                     'name',
                     'description',
                     'price',
+                    'links'
                 ]
             ],
             'message', 'status', 'errors'
@@ -46,6 +47,9 @@ class ShowPlateTest extends TestCase
                     'name'          => $this->plate->name,
                     'description'   => $this->plate->description,
                     'price'         => (string)$this->plate->price,
+                    'links'         => [
+                        'parent' => route('restaurants.show', $this->restaurant),
+                    ],
                 ]
             ],
         ]);

@@ -31,12 +31,14 @@ class ListMenuTest extends TestCase
             'data' => [
                 'menus' => [
                     '*' => [
-                        'id', 'restaurant_id', 'description', 'name'
+                        'id', 'restaurant_id', 'description', 'name', 'links'
                     ]
                 ]
             ],
             'message', 'status', 'errors'
         ]);
+        $response->assertJsonPath('data.menus.0.links.self',
+            route('restaurants.menus.index', $this->restaurant));
         $response->assertJsonMissingPath('data.menus.0.plates');
     }
 

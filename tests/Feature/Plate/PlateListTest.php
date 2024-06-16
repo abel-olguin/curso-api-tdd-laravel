@@ -26,10 +26,12 @@ class PlateListTest extends TestCase
         $response->assertJsonStructure([
             'data' => [
                 'plates' => [
-                    '*' => ['id', 'restaurant_id', 'name', 'description', 'price']
+                    '*' => ['id', 'restaurant_id', 'name', 'description', 'price', 'links']
                 ],
             ]
         ]);
+        $response->assertJsonPath('data.plates.0.links.self',
+            route('restaurants.plates.index', $this->restaurant));
         foreach (range(0, 14) as $platePosition) {
             $response->assertJsonPath("data.plates.{$platePosition}.restaurant_id", $this->restaurant->id);
         }

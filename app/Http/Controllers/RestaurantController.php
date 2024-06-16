@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\RestaurantCollection;
-use App\Http\Resources\RestaurantResource;
+use App\Http\Resources\RestaurantDetailResource;
 use App\Models\Restaurant;
 use App\Http\Requests\StoreRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
@@ -16,7 +16,7 @@ class RestaurantController extends Controller
      */
     public function index()
     {
-        $restaurants = auth()->user()->restaurants()->paginate();
+        $restaurants = auth()->user()->restaurants()->search()->paginate();
         return jsonResponse(new RestaurantCollection($restaurants));
     }
 
@@ -27,7 +27,7 @@ class RestaurantController extends Controller
     {
         $restaurant = auth()->user()->restaurants()->create($request->validated());
         return jsonResponse(data: [
-            'restaurant' => RestaurantResource::make($restaurant),
+            'restaurant' => RestaurantDetailResource::make($restaurant),
         ]);
     }
 
@@ -38,7 +38,7 @@ class RestaurantController extends Controller
     {
         Gate::authorize('view', $restaurant);
         return jsonResponse([
-            'restaurant' => RestaurantResource::make($restaurant)
+            'restaurant' => RestaurantDetailResource::make($restaurant)
         ]);
     }
 
@@ -50,7 +50,7 @@ class RestaurantController extends Controller
         Gate::authorize('update', $restaurant);
         $restaurant->update($request->validated());
         return jsonResponse(data: [
-            'restaurant' => RestaurantResource::make($restaurant),
+            'restaurant' => RestaurantDetailResource::make($restaurant),
         ]);
     }
 

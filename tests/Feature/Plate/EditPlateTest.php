@@ -45,6 +45,7 @@ class EditPlateTest extends TestCase
                     ...$data,
                     'id'            => $this->plate->id,
                     'restaurant_id' => $this->restaurant->id,
+                    'links'         => ['parent' => route('restaurants.show', $this->restaurant)],
                 ]
             ]
         ]);

@@ -19,7 +19,7 @@ class PlateController extends Controller
     {
 
         Gate::authorize('viewPlates', $restaurant);
-        $plates = $restaurant->plates()->search()->paginate();
+        $plates = $restaurant->plates()->search()->sort()->paginate();
         return jsonResponse(new PlateCollection($plates));
     }
 

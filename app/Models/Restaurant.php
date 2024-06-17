@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Models\Traits\HasSearch;
+use App\Models\Traits\HasSort;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Restaurant extends Model
 {
-    use HasFactory, HasSearch;
+    use HasFactory, HasSearch, HasSort;
 
     protected $guarded = [];
 
@@ -25,5 +26,10 @@ class Restaurant extends Model
     public function searchFields()
     {
         return ['name', 'description'];
+    }
+
+    public function sortFields()
+    {
+        return ['id', 'name', 'description', 'created_at'];
     }
 }

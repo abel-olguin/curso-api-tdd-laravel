@@ -42,6 +42,8 @@ class CreatePlateTest extends TestCase
                     ...$data,
                     'id'            => 1,
                     'restaurant_id' => $this->restaurant->id,
+                    'links'         => ['parent' => route('restaurants.show', $this->restaurant)],
+                    
                 ]
             ]
         ]);

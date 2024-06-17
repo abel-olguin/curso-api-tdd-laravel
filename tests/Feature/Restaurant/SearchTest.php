@@ -38,7 +38,6 @@ class SearchTest extends TestCase
             'search' => 'description two'
         ];
         $response = $this->apiAs($this->user, 'get', route('restaurants.index'), $data);
-
         $response->assertStatus(200);
         $response->assertJsonCount(1, 'data.restaurants');
         $response->assertJsonPath('data.restaurants.0.id', $this->restaurant->id);

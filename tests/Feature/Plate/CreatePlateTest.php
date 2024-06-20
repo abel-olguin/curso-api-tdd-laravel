@@ -4,6 +4,7 @@ namespace Tests\Feature\Plate;
 
 use App\Models\Restaurant;
 use App\Models\User;
+use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -43,7 +44,7 @@ class CreatePlateTest extends TestCase
                     'id'            => 1,
                     'restaurant_id' => $this->restaurant->id,
                     'links'         => ['parent' => route('restaurants.show', $this->restaurant)],
-                    
+
                 ]
             ]
         ]);
@@ -139,6 +140,7 @@ class CreatePlateTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->seed(RoleSeeder::class);
         $this->seed(UserSeeder::class);
         $this->restaurant = Restaurant::factory()->create([
             'user_id' => 1

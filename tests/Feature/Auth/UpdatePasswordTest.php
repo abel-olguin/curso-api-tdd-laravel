@@ -3,6 +3,7 @@
 namespace Auth;
 
 use App\Models\User;
+use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -126,6 +127,7 @@ class UpdatePasswordTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->seed(RoleSeeder::class);
         $this->seed(UserSeeder::class);
     }
 

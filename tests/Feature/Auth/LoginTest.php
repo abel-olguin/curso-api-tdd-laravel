@@ -2,6 +2,7 @@
 
 namespace Auth;
 
+use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
@@ -115,6 +116,8 @@ class LoginTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->seed(RoleSeeder::class);
+
         $this->seed(UserSeeder::class);
     }
 }

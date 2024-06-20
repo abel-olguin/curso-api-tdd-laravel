@@ -2,7 +2,9 @@
 
 namespace Auth;
 
+use App\Enums\Roles;
 use App\Models\User;
+use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -14,7 +16,7 @@ class UpdateUserDataTest extends TestCase
     use RefreshDatabase;
 
     #[Test]
-    public function an_aunthenticated_user_can_modify_their_data(): void
+    public function an_authenticated_user_can_modify_their_data(): void
     {
         //$this->withoutExceptionHandling();
         # teniendo
@@ -35,6 +37,7 @@ class UpdateUserDataTest extends TestCase
                     'email'     => 'example@example.com',
                     'name'      => 'newname',
                     'last_name' => 'new lastname',
+                    'roles'     => [Roles::USER->value],
                 ]
             ], 'status' => 200
         ]);
@@ -47,7 +50,7 @@ class UpdateUserDataTest extends TestCase
     }
 
     #[Test]
-    public function an_aunthenticated_user_cannot_modify_their_email(): void
+    public function an_authenticated_user_cannot_modify_their_email(): void
     {
         //$this->withoutExceptionHandling();
         # teniendo
@@ -70,6 +73,7 @@ class UpdateUserDataTest extends TestCase
                     'email'     => 'example@example.com',
                     'name'      => 'newname',
                     'last_name' => 'new lastname',
+                    'roles'     => [Roles::USER->value],
                 ]
             ], 'status' => 200
         ]);
@@ -168,6 +172,8 @@ class UpdateUserDataTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->seed(RoleSeeder::class);
+
         $this->seed(UserSeeder::class);
     }
 }

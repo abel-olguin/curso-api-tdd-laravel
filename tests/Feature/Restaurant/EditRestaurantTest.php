@@ -5,6 +5,7 @@ namespace Restaurant;
 use App\Models\Restaurant;
 use App\Models\User;
 use Database\Seeders\RestaurantSeeder;
+use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
@@ -153,6 +154,7 @@ class EditRestaurantTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->seed(RoleSeeder::class);
         $this->seed(UserSeeder::class);
         $this->restaurant = Restaurant::factory()->create([
             'user_id'     => 1,

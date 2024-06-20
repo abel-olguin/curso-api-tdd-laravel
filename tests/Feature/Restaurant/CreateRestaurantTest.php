@@ -5,6 +5,7 @@ namespace Restaurant;
 use App\Models\Restaurant;
 use App\Models\User;
 use Database\Seeders\RestaurantSeeder;
+use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
@@ -58,7 +59,7 @@ class CreateRestaurantTest extends TestCase
         #esperando
         $response->assertStatus(401); //created
     }
-    
+
     #[Test]
     public function name_must_be_required(): void
     {
@@ -99,6 +100,7 @@ class CreateRestaurantTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->seed(RoleSeeder::class);
         $this->seed(UserSeeder::class);
     }
 

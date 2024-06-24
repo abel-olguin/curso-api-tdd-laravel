@@ -11,6 +11,9 @@ Route::put('/reset-password', [\App\Http\Controllers\Auth\ResetPasswordControlle
 
 Route::middleware('auth:api')->group(function () {
     # restaurants
+    Route::middleware('role:' . \App\Enums\Roles::ADMIN->value)
+         ->apiResource('users', \App\Http\Controllers\UserController::class)->only('destroy');
+
     Route::apiResource('restaurants', \App\Http\Controllers\RestaurantController::class);
 
     Route::middleware('can:view,restaurant')

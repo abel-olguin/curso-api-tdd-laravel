@@ -42,6 +42,8 @@ class ShowMenuTest extends TestCase
         ]);
 
         $response->assertJsonPath('data.menu.links.parent', route('restaurants.show', $this->restaurant));
+        $response->assertJsonPath('data.menu.links.public', route('public.menu.show', $this->menu));
+        $response->assertJsonPath('data.menu.links.qr', $this->menu->qr);
         $response->assertJsonPath('data.menu.name', $this->menu->name);
         $response->assertJsonPath('data.menu.description', $this->menu->description);
 

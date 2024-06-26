@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Menu;
 
+use App\Jobs\GenerateQrJob;
 use App\Models\Menu;
 use App\Models\Plate;
 use App\Models\Restaurant;
@@ -9,6 +10,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Queue;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -24,6 +26,7 @@ class CreateMenuTest extends TestCase
     public function an_authenticated_user_can_create_a_menu(): void
     {
         $this->withoutExceptionHandling();
+        Queue::fake();
         $data     = [
             'name'        => 'menu name',
             'description' => 'menu description',
@@ -64,6 +67,7 @@ class CreateMenuTest extends TestCase
             ]);
         }
 
+        Queue::assertPushed(GenerateQrJob::class, 1);
     }
 
     #[Test]

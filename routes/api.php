@@ -9,6 +9,9 @@ Route::put('/password', [\App\Http\Controllers\Auth\UpdatePasswordController::cl
 Route::post('/reset-password', [\App\Http\Controllers\Auth\ResetPasswordController::class, 'send']);
 Route::put('/reset-password', [\App\Http\Controllers\Auth\ResetPasswordController::class, 'resetPassword']);
 
+Route::get('menus/{menu:id}', [\App\Http\Controllers\Public\MenuController::class, 'show'])
+     ->name('public.menu.show');
+
 Route::middleware('auth:api')->group(function () {
     # restaurants
     Route::middleware('role:' . \App\Enums\Roles::ADMIN->value)

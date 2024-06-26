@@ -21,6 +21,7 @@ class MenuFactory extends Factory
             'restaurant_id' => fn() => Restaurant::factory()->create(),
             'name'          => fake()->words(3, true),
             'description'   => fake()->words(10, true),
+            'qr'            => 'qr/test.png',
         ];
     }
 }

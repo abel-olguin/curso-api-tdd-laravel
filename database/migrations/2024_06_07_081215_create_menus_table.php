@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->foreignIdFor(\App\Models\Restaurant::class)->constrained();
             $table->string('name');
             $table->string('description');
+            $table->string('qr')->nullable();
             $table->timestamps();
         });
     }

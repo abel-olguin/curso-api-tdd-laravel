@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\MenuCollection;
 use App\Http\Resources\MenuDetailResource;
+use App\Jobs\GenerateQrJob;
 use App\Models\Menu;
 use App\Http\Requests\StoreMenuRequest;
 use App\Http\Requests\UpdateMenuRequest;
@@ -30,6 +31,9 @@ class MenuController extends Controller
 
         $menu = $restaurant->menus()->create($request->only('name', 'description'));
         $menu->plates()->sync($request->get('plate_ids'));
+
+        GenerateQrJob::dispatch($menu);
+
         return jsonResponse(['menu' => MenuDetailResource::make($menu)]);
     }
 

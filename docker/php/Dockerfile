@@ -17,7 +17,7 @@ RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
 RUN curl -sLS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer
 RUN apt-get -y autoremove && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY php.ini "$PHP_INI_DIR/99-app.ini"
+COPY php.ini "${PHP_INI_DIR}/conf.d/99-app.ini"
 
 #si quieres habilitar el cron
 

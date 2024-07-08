@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Base64Helper;
+use App\Helpers\PlateHelper;
 use App\Http\Resources\PlateCollection;
 use App\Http\Resources\PlateDetailResource;
 use App\Models\Plate;
@@ -9,9 +11,16 @@ use App\Http\Requests\StorePlateRequest;
 use App\Http\Requests\UpdatePlateRequest;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class PlateController extends Controller
 {
+
+    public function __construct(public PlateHelper $helper)
+    {
+
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -28,8 +37,11 @@ class PlateController extends Controller
      */
     public function store(StorePlateRequest $request, Restaurant $restaurant)
     {
+        $data = $request->safe()->except('image');
 
-        $plate = $restaurant->plates()->create($request->validated());
+        $data['image'] = $this->helper->uploadImage($request->get('image'), $restaurant->id);
+
+        $plate = $restaurant->plates()->create($data);
         return jsonResponse(['plate' => PlateDetailResource::make($plate)]);
     }
 
@@ -38,7 +50,6 @@ class PlateController extends Controller
      */
     public function show(Restaurant $restaurant, Plate $plate)
     {
-
         return jsonResponse(['plate' => PlateDetailResource::make($plate)]);
     }
 
@@ -47,8 +58,13 @@ class PlateController extends Controller
      */
     public function update(UpdatePlateRequest $request, Restaurant $restaurant, Plate $plate)
     {
+        $data = $request->safe()->except('image');
 
-        $plate->update($request->validated());
+        if($request->get('image')){
+            $data['image'] = $this->helper->uploadImage($request->get('image'), $restaurant->id);
+        }
+
+        $plate->update($data);
         return jsonResponse(['plate' => PlateDetailResource::make($plate->fresh())]);
     }
 

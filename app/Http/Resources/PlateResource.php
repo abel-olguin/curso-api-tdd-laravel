@@ -20,6 +20,7 @@ class PlateResource extends JsonResource
             'name'          => $this->name,
             'description'   => $this->description,
             'price'         => $this->price,
+            'image'         => $this->image,
             'links'         => [
                 'self' => route('restaurants.plates.index', $this->restaurant_id)
             ],

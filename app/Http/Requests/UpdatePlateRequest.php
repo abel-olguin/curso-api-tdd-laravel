@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Base64ImageRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdatePlateRequest extends FormRequest
@@ -25,6 +26,7 @@ class UpdatePlateRequest extends FormRequest
             'name'        => 'required',
             'price'       => 'required',
             'description' => 'required',
+            'image' => [new Base64ImageRule]
         ];
     }
 }

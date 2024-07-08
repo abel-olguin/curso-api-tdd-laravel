@@ -27,7 +27,7 @@ class PlateListTest extends TestCase
         $response->assertJsonStructure([
             'data' => [
                 'plates' => [
-                    '*' => ['id', 'restaurant_id', 'name', 'description', 'price', 'links']
+                    '*' => ['id', 'restaurant_id', 'name', 'description', 'price', 'image', 'links']
                 ],
             ]
         ]);

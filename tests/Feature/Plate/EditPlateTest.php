@@ -28,6 +28,7 @@ class EditPlateTest extends TestCase
             'name'        => 'NEW Name test',
             'description' => 'NEW Description test',
             'price'       => 'NEW $123',
+            'image' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyAQMAAAAk8RryAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAANQTFRFAAAAp3o92gAAAA1JREFUGBljGAWDCgAAAZAAAcH2qj4AAAAASUVORK5CYII='
         ];
 
         #haciendo
@@ -37,9 +38,10 @@ class EditPlateTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonStructure([
-            'data' => ['plate' => ['id', 'restaurant_id', 'name', 'description', 'price']],
+            'data' => ['plate' => ['id', 'restaurant_id', 'name', 'description', 'price', 'image']],
             'message', 'status', 'errors'
         ]);
+        $plate = Plate::find(1);
         $response->assertJsonFragment([
             'data' => [
                 'plate' => [
@@ -47,6 +49,7 @@ class EditPlateTest extends TestCase
                     'id'            => $this->plate->id,
                     'restaurant_id' => $this->restaurant->id,
                     'links'         => ['parent' => route('restaurants.show', $this->restaurant)],
+                    'image' => $plate->image,
                 ]
             ]
         ]);
@@ -65,6 +68,7 @@ class EditPlateTest extends TestCase
             'name'        => 'New Name test',
             'description' => 'New Description test',
             'price'       => 'New $123',
+            'image' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyAQMAAAAk8RryAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAANQTFRFAAAAp3o92gAAAA1JREFUGBljGAWDCgAAAZAAAcH2qj4AAAAASUVORK5CYII='
         ];
 
         #haciendo
@@ -81,6 +85,7 @@ class EditPlateTest extends TestCase
             'name'        => 'New Name test',
             'description' => 'New Description test',
             'price'       => 'New $123',
+            'image' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyAQMAAAAk8RryAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAANQTFRFAAAAp3o92gAAAA1JREFUGBljGAWDCgAAAZAAAcH2qj4AAAAASUVORK5CYII='
         ];
         $user = User::factory()->create();
         #haciendo
@@ -117,6 +122,7 @@ class EditPlateTest extends TestCase
             'name'        => 'New Name test',
             'description' => '',
             'price'       => 'New $123',
+            'image' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyAQMAAAAk8RryAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAANQTFRFAAAAp3o92gAAAA1JREFUGBljGAWDCgAAAZAAAcH2qj4AAAAASUVORK5CYII='
         ];
 
         #haciendo
@@ -136,6 +142,7 @@ class EditPlateTest extends TestCase
             'name'        => 'New Name test',
             'description' => 'New Description test',
             'price'       => '',
+            'image' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyAQMAAAAk8RryAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAANQTFRFAAAAp3o92gAAAA1JREFUGBljGAWDCgAAAZAAAcH2qj4AAAAASUVORK5CYII='
         ];
 
         #haciendo
@@ -145,6 +152,44 @@ class EditPlateTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJsonStructure(['errors' => ['price']]);
+    }
+
+    #[Test]
+    public function plate_image_is_required()
+    {
+        #teniendo
+        $data = [
+            'name'        => 'Name test',
+            'description' => 'Description test',
+            'price'       => '123',
+            'image'       => '',
+        ];
+
+        #haciendo
+        $response =
+            $this->apiAs(User::find(1), 'post', "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates", $data);
+
+        $response->assertStatus(422);
+        $response->assertJsonStructure(['errors' => ['image']]);
+    }
+
+    #[Test]
+    public function plate_image_must_be_valid()
+    {
+        #teniendo
+        $data = [
+            'name'        => 'Name test',
+            'description' => 'Description test',
+            'price'       => '123',
+            'image'       => '1234',
+        ];
+
+        #haciendo
+        $response =
+            $this->apiAs(User::find(1), 'post', "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates", $data);
+
+        $response->assertStatus(422);
+        $response->assertJsonStructure(['errors' => ['image']]);
     }
 
     protected function setUp(): void

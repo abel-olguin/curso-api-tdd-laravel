@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Plate;
 
+use App\Models\Plate;
 use App\Models\Restaurant;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
@@ -26,6 +27,7 @@ class CreatePlateTest extends TestCase
             'name'        => 'Name test',
             'description' => 'Description test',
             'price'       => '$123',
+            'image' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyAQMAAAAk8RryAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAANQTFRFAAAAp3o92gAAAA1JREFUGBljGAWDCgAAAZAAAcH2qj4AAAAASUVORK5CYII='
         ];
 
         #haciendo
@@ -34,9 +36,10 @@ class CreatePlateTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonStructure([
-            'data' => ['plate' => ['id', 'restaurant_id', 'name', 'description', 'price']],
+            'data' => ['plate' => ['id', 'restaurant_id', 'name', 'description', 'price', 'image']],
             'message', 'status', 'errors'
         ]);
+        $plate = Plate::find(1);
         $response->assertJsonFragment([
             'data' => [
                 'plate' => [
@@ -44,11 +47,18 @@ class CreatePlateTest extends TestCase
                     'id'            => 1,
                     'restaurant_id' => $this->restaurant->id,
                     'links'         => ['parent' => route('restaurants.show', $this->restaurant)],
-
+                    'image' => $plate->image,
                 ]
             ]
         ]);
-        $this->assertDatabaseHas('plates', $data);
+        $this->assertDatabaseHas('plates', [
+            'name'        => 'Name test',
+            'description' => 'Description test',
+            'price'       => '$123']);
+        $this->assertDatabaseMissing('plates', [
+            'image' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyAQMAAAAk8RryAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAANQTFRFAAAAp3o92gAAAA1JREFUGBljGAWDCgAAAZAAAcH2qj4AAAAASUVORK5CYII='
+        ]);
+        $this->assertNotNull($plate->image);
     }
 
     #[Test]
@@ -59,6 +69,7 @@ class CreatePlateTest extends TestCase
             'name'        => 'Name test',
             'description' => 'Description test',
             'price'       => '$123',
+            'image' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyAQMAAAAk8RryAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAANQTFRFAAAAp3o92gAAAA1JREFUGBljGAWDCgAAAZAAAcH2qj4AAAAASUVORK5CYII='
         ];
 
         #haciendo
@@ -75,6 +86,7 @@ class CreatePlateTest extends TestCase
             'name'        => 'Name test',
             'description' => 'Description test',
             'price'       => '$123',
+            'image' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyAQMAAAAk8RryAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAANQTFRFAAAAp3o92gAAAA1JREFUGBljGAWDCgAAAZAAAcH2qj4AAAAASUVORK5CYII='
         ];
         $user = User::factory()->create();
         #haciendo
@@ -91,6 +103,7 @@ class CreatePlateTest extends TestCase
             'name'        => '',
             'description' => 'Description test',
             'price'       => '$123',
+            'image' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyAQMAAAAk8RryAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAANQTFRFAAAAp3o92gAAAA1JREFUGBljGAWDCgAAAZAAAcH2qj4AAAAASUVORK5CYII='
         ];
 
         #haciendo
@@ -109,6 +122,7 @@ class CreatePlateTest extends TestCase
             'name'        => 'Name test',
             'description' => '',
             'price'       => '$123',
+            'image' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyAQMAAAAk8RryAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAANQTFRFAAAAp3o92gAAAA1JREFUGBljGAWDCgAAAZAAAcH2qj4AAAAASUVORK5CYII='
         ];
 
         #haciendo
@@ -127,6 +141,7 @@ class CreatePlateTest extends TestCase
             'name'        => 'Name test',
             'description' => 'Description test',
             'price'       => '',
+            'image' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyAQMAAAAk8RryAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAANQTFRFAAAAp3o92gAAAA1JREFUGBljGAWDCgAAAZAAAcH2qj4AAAAASUVORK5CYII='
         ];
 
         #haciendo
@@ -135,6 +150,44 @@ class CreatePlateTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJsonStructure(['errors' => ['price']]);
+    }
+
+    #[Test]
+    public function plate_image_is_required()
+    {
+        #teniendo
+        $data = [
+            'name'        => 'Name test',
+            'description' => 'Description test',
+            'price'       => '123',
+            'image'       => '',
+        ];
+
+        #haciendo
+        $response =
+            $this->apiAs(User::find(1), 'post', "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates", $data);
+
+        $response->assertStatus(422);
+        $response->assertJsonStructure(['errors' => ['image']]);
+    }
+
+    #[Test]
+    public function plate_image_must_be_valid()
+    {
+        #teniendo
+        $data = [
+            'name'        => 'Name test',
+            'description' => 'Description test',
+            'price'       => '123',
+            'image'       => '1234',
+        ];
+
+        #haciendo
+        $response =
+            $this->apiAs(User::find(1), 'post', "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates", $data);
+
+        $response->assertStatus(422);
+        $response->assertJsonStructure(['errors' => ['image']]);
     }
 
     protected function setUp(): void

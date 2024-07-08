@@ -4,8 +4,10 @@ namespace App\Models;
 
 use App\Models\Traits\HasSearch;
 use App\Models\Traits\HasSort;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Plate extends Model
 {
@@ -26,5 +28,10 @@ class Plate extends Model
     public function sortFields()
     {
         return ['id', 'name', 'description', 'created_at'];
+    }
+
+    public function image(): Attribute
+    {
+        return new Attribute(get: fn($attr) => $attr ? Storage::disk('public')->url($attr) : null);
     }
 }

@@ -38,9 +38,10 @@ class ListMenuTest extends TestCase
             'message', 'status', 'errors'
         ]);
         $response->assertJsonPath('data.menus.0.links.self',
-            route('restaurants.menus.index', $this->restaurant));
+            route('restaurants.menus.show', [$this->restaurant, $this->restaurant->menus()->first()]));
 
         $response->assertJsonPath('data.menus.0.links.public',
+
             route('public.menu.show', $this->menus->first()));
         $response->assertJsonPath('data.menus.0.links.qr', $this->menus->first()->qr);
 

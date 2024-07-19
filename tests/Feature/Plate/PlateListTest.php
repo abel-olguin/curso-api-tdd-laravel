@@ -32,7 +32,7 @@ class PlateListTest extends TestCase
             ]
         ]);
         $response->assertJsonPath('data.plates.0.links.self',
-            route('restaurants.plates.index', $this->restaurant));
+            route('restaurants.plates.show', [$this->restaurant, $this->restaurant->plates()->first()]));
         foreach (range(0, 14) as $platePosition) {
             $response->assertJsonPath("data.plates.{$platePosition}.restaurant_id", $this->restaurant->id);
         }

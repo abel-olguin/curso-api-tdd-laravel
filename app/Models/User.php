@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\Roles;
+use App\Http\Resources\UserResource;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -64,10 +65,11 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [
-            'roles'       => $this->getRoleNames(),
+            'user' => UserResource::make($this),
+            /*'roles'       => $this->getRoleNames(),
             'permissions' => $this->hasRole(Roles::ADMIN->value) ?
                 Permission::select('name')->get()->pluck('name')
-                : $this->getPermissionNames(),
+                : $this->getPermissionNames(),*/
         ];
     }
 

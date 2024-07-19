@@ -20,7 +20,7 @@ class MenuResource extends JsonResource
             'name'          => $this->name,
             'description'   => $this->description,
             'links'         => [
-                'self'   => route('restaurants.menus.index', $this->restaurant_id),
+                'self' => route('restaurants.menus.show', [$this->restaurant_id, $this->id]),
                 'public' => route('public.menu.show', $this->id),
                 'qr'     => $this->qr,
             ],

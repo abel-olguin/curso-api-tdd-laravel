@@ -22,7 +22,6 @@ class PlateFactory extends Factory
             'price'         => fake()->numberBetween(100, 1000),
             'name'          => fake()->words(2, true),
             'description'   => fake()->text,
-            'image'   => '/path/to/image.png',
         ];
     }
 }

@@ -11,13 +11,12 @@ trait HasSort
         return ['id'];
     }
 
-    public function scopeSort(Builder $builder, $sortBy = '', $sortDirection = '')
+    public function scopeSort(Builder $builder,  $sortDirection = '')
     {
-        $sortBy        = $sortBy ?: request()->get('sortBy');
+        $sortBy        = request()->get('sortBy') ?: 'created_at';
         $sortDirection = $sortDirection ?: request()->get('sortDirection');
         $sortDirection = $sortDirection === 'asc' ? 'asc' : 'desc';
 
-        if (!$sortBy) return;
         if (!in_array($sortBy, $this->sortFields())) {
             abort(400, 'Invalid sortBy');
         }

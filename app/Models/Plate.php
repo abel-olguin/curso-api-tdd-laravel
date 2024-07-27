@@ -32,6 +32,6 @@ class Plate extends Model
 
     public function image(): Attribute
     {
-        return new Attribute(get: fn($attr) => $attr ? Storage::disk('public')->url($attr) : null);
+        return new Attribute(get: fn($attr) => $attr ? Storage::disk('public')->url($attr):  asset('assets/images/default-plate.svg'));
     }
 }

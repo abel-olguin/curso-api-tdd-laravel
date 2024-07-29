@@ -22,6 +22,7 @@ Route::middleware('auth:api')->group(function () {
     Route::middleware('can:view,restaurant')
          ->as('restaurants.')
          ->prefix('restaurants/{restaurant:id}')
+         ->scopeBindings()
          ->group(function () {
              # plates
              Route::apiResource('plates', \App\Http\Controllers\PlateController::class);

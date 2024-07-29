@@ -25,7 +25,7 @@ class AdminTest extends TestCase
         $response = $this->apiAs($admin, 'delete', "{$this->apiBase}/restaurants/{$this->restaurant->id}");
 
         $response->assertStatus(200);
-        $this->assertDatabaseMissing('restaurants', [
+        $this->assertSoftDeleted('restaurants', [
             'id' => $this->restaurant->id,
         ]);
 

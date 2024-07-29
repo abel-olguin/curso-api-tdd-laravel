@@ -33,7 +33,7 @@ class UpdateMenuRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'plate_ids' => array_unique($this->get('plate_ids')),
+            'plate_ids' => array_unique($this->get('plate_ids') ?: []),
         ]);
     }
 }

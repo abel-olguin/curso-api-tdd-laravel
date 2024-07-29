@@ -37,12 +37,13 @@ class ListMenuTest extends TestCase
             ],
             'message', 'status', 'errors'
         ]);
+        $firstMenu = $response->json('data.menus.0');//esto debido al ordenamiento
+
         $response->assertJsonPath('data.menus.0.links.self',
-            route('restaurants.menus.show', [$this->restaurant, $this->restaurant->menus()->first()]));
+            route('restaurants.menus.show', [$this->restaurant, $firstMenu['id']]));
 
         $response->assertJsonPath('data.menus.0.links.public',
-
-            route('public.menu.show', $this->menus->first()));
+            route('public.menu.show', $firstMenu['id']));
         $response->assertJsonPath('data.menus.0.links.qr', $this->menus->first()->qr);
 
         $response->assertJsonMissingPath('data.menus.0.plates');

@@ -22,7 +22,7 @@ class DeleteRestaurantTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonFragment(['message' => 'OK']);
-        $this->assertDatabaseCount('restaurants', 0);
+        $this->assertSoftDeleted('restaurants', ['id' => 1]);
     }
 
     #[Test]
@@ -35,7 +35,7 @@ class DeleteRestaurantTest extends TestCase
 
         #esperando
         $response->assertStatus(401); //created
-        $this->assertDatabaseCount('restaurants', 1);
+        $this->assertNotSoftDeleted('restaurants', ['id' => 1]);
     }
 
     #[Test]
@@ -45,7 +45,7 @@ class DeleteRestaurantTest extends TestCase
         $response = $this->apiAs($user, 'delete', "{$this->apiBase}/restaurants/{$this->restaurant->id}");
 
         $response->assertStatus(403);
-        $this->assertDatabaseCount('restaurants', 1);
+        $this->assertNotSoftDeleted('restaurants', ['id' => 1]);
 
     }
 

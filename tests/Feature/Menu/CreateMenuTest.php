@@ -49,9 +49,11 @@ class CreateMenuTest extends TestCase
         $firstPlate = $this->plates->first();
 
         $response->assertJsonPath('data.menu.plates.0', [
+            'id'          => $firstPlate->id,
             'name'        => $firstPlate->name,
             'description' => $firstPlate->description,
             'price'       => (string)$firstPlate->price,
+            'image'       => $firstPlate->image,
         ]);
 
         $this->assertDatabaseHas('menus', [

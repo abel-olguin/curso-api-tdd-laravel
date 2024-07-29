@@ -6,10 +6,11 @@ use App\Models\Traits\HasSearch;
 use App\Models\Traits\HasSort;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Restaurant extends Model
 {
-    use HasFactory, HasSearch, HasSort;
+    use HasFactory, HasSearch, HasSort, SoftDeletes;
 
     protected $guarded = [];
 

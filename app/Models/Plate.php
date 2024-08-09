@@ -27,7 +27,7 @@ class Plate extends Model
 
     public function sortFields()
     {
-        return ['id', 'name', 'description', 'created_at'];
+        return ['id', 'name', 'description','price', 'created_at'];
     }
 
     public function image(): Attribute

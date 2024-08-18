@@ -30,17 +30,13 @@ class UpdateUserDataTest extends TestCase
         #esperando
         $response->assertStatus(200); //created
         $response->assertJsonStructure(['message', 'data', 'errors', 'status']);
-        $response->assertJsonFragment([
-            'message'   => 'OK', 'data' => [
-                'user' => [
+        $response->assertJsonPath('data.user',[
                     'id'        => 1,
                     'email'     => 'example@example.com',
                     'name'      => 'newname',
                     'last_name' => 'new lastname',
                     'roles'     => [Roles::USER->value],
-                ]
-            ], 'status' => 200
-        ]);
+            ]);
 
         $this->assertDatabaseMissing('users', [
             'email'     => 'example@example.com',
@@ -66,17 +62,13 @@ class UpdateUserDataTest extends TestCase
         #esperando
         $response->assertStatus(200); //created
         $response->assertJsonStructure(['message', 'data', 'errors', 'status']);
-        $response->assertJsonFragment([
-            'message'   => 'OK', 'data' => [
-                'user' => [
+        $response->assertJsonPath('data.user', [
                     'id'        => 1,
                     'email'     => 'example@example.com',
                     'name'      => 'newname',
                     'last_name' => 'new lastname',
-                    'roles'     => [Roles::USER->value],
-                ]
-            ], 'status' => 200
-        ]);
+                    'roles'     => [Roles::USER->value]
+            ]);
     }
 
     #[Test]

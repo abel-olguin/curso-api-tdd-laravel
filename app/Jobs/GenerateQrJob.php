@@ -28,7 +28,7 @@ class GenerateQrJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $url      = config('app.frontDomain') . $this->menu->id;
+        $url      = config('app.frontDomain') .'/'. $this->menu->id;
         $qr       = QrCode::format('png')->size(500)->margin(10)->generate($url);
         $filename = 'qr/' . uniqid($this->menu->id . '_') . '.png';
         Storage::disk('public')->put($filename, $qr);

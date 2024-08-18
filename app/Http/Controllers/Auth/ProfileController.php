@@ -12,6 +12,7 @@ class ProfileController extends Controller
     {
         auth()->user()->update($request->validated());
         $user = UserResource::make(auth()->user()->fresh());
-        return jsonResponse(compact('user'));
+        $token = auth()->login(auth()->user());
+        return jsonResponse(compact('user', 'token'));
     }
 }

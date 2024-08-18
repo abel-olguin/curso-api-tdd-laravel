@@ -21,6 +21,7 @@ class UserRegisterTest extends TestCase
         $data = [
             'email'     => 'email@email.com',
             'password'  => 'password',
+            'password_confirmation'  => 'password',
             'name'      => 'example',
             'last_name' => 'example example',
         ];
@@ -58,6 +59,7 @@ class UserRegisterTest extends TestCase
         $data = [
             'email'     => 'email@email.com',
             'password'  => 'password',
+            'password_confirmation'  => 'password',
             'name'      => 'example',
             'last_name' => 'example example',
         ];
@@ -81,6 +83,7 @@ class UserRegisterTest extends TestCase
         $data = [
             'email'     => '',
             'password'  => 'password',
+            'password_confirmation'  => 'password',
             'name'      => 'example',
             'last_name' => 'example example',
         ];
@@ -101,6 +104,7 @@ class UserRegisterTest extends TestCase
         $data = [
             'email'     => 'asdasdasdasd',
             'password'  => 'password',
+            'password_confirmation'  => 'password',
             'name'      => 'example',
             'last_name' => 'example example',
         ];
@@ -123,6 +127,7 @@ class UserRegisterTest extends TestCase
         $data = [
             'email'     => 'email@email.com',
             'password'  => 'password',
+            'password_confirmation'  => 'password',
             'name'      => 'example',
             'last_name' => 'example example',
         ];
@@ -144,6 +149,29 @@ class UserRegisterTest extends TestCase
         $data = [
             'email'     => 'email@email.com',
             'password'  => '',
+            'password_confirmation'  => '',
+            'name'      => 'example',
+            'last_name' => 'example example',
+        ];
+
+        # haciendo
+        $response = $this->postJson("{$this->apiBase}/users", $data);
+
+        #esperando
+
+        $response->assertStatus(422);
+        $response->assertJsonStructure(['message', 'data', 'status', 'errors' => ['password']]);
+    }
+
+    #[Test]
+    public function password_must_be_confirmed(): void
+    {
+        //$this->withoutExceptionHandling();
+        # teniendo
+        $data = [
+            'email'     => 'email@email.com',
+            'password'  => 'password',
+            'password_confirmation'  => '',
             'name'      => 'example',
             'last_name' => 'example example',
         ];
@@ -164,6 +192,7 @@ class UserRegisterTest extends TestCase
         $data = [
             'email'     => 'email@email.com',
             'password'  => 'abcd',
+            'password_confirmation'  => 'abcd',
             'name'      => 'example',
             'last_name' => 'example example',
         ];
@@ -183,6 +212,7 @@ class UserRegisterTest extends TestCase
         $data = [
             'email'     => 'email@email.com',
             'password'  => 'password',
+            'password_confirmation'  => 'password',
             'name'      => '',
             'last_name' => 'example example',
         ];
@@ -201,6 +231,7 @@ class UserRegisterTest extends TestCase
         $data = [
             'email'     => 'email@email.com',
             'password'  => 'password',
+            'password_confirmation'  => 'password',
             'name'      => 'e',
             'last_name' => 'example example',
         ];
@@ -221,6 +252,7 @@ class UserRegisterTest extends TestCase
         $data = [
             'email'     => 'email@email.com',
             'password'  => 'password',
+            'password_confirmation'  => 'password',
             'name'      => 'example',
             'last_name' => '',
         ];
@@ -239,6 +271,7 @@ class UserRegisterTest extends TestCase
         $data = [
             'email'     => 'email@email.com',
             'password'  => 'password',
+            'password_confirmation'  => 'password',
             'name'      => 'example',
             'last_name' => 'e',
         ];

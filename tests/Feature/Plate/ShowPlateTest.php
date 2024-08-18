@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Plate;
 
+use App\Models\Menu;
 use App\Models\Plate;
 use App\Models\Restaurant;
 use App\Models\User;
@@ -74,6 +75,31 @@ class ShowPlateTest extends TestCase
         $response = $this->apiAs($user, 'get',
             "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates/{$this->plate->id}");
         $response->assertStatus(403);
+    }
+
+    #[Test]
+    public function an_authenticated_user_cannot_see_a_plate_of_another_user(): void
+    {
+        //$this->withoutExceptionHandling();
+        $plate       = Plate::factory()->create();
+
+        $response =
+            $this->apiAs($this->user, 'get',
+                "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates/{$plate->id}");
+        $response->assertStatus(404);
+    }
+
+    #[Test]
+    public function an_authenticated_user_cannot_see_a_plate_of_another_restaurant(): void
+    {
+        //$this->withoutExceptionHandling();
+        $restaurant = Restaurant::factory()->create(['user_id' => $this->user->id]);
+        $plate       = Plate::factory()->create(['restaurant_id' => $restaurant->id]);
+
+        $response =
+            $this->apiAs($this->user, 'get',
+                "{$this->apiBase}/restaurants/{$this->restaurant->id}/plates/{$plate->id}");
+        $response->assertStatus(404);
     }
 
     protected function setUp(): void

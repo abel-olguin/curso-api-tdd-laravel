@@ -75,7 +75,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function sendPasswordResetNotification($token)
     {
-        $url = 'http://front.app/reset-password?token=' . $token . '&email=' . $this->email;
+        $url = config('app.frontDomain').'/reset-password?token=' . $token . '&email=' . $this->email;
         $this->notify(new ResetPasswordNotification($url));
     }
 

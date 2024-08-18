@@ -42,7 +42,7 @@ class ResetPasswordTest extends TestCase
         $data = ['email' => ''];
 
         # haciendo
-        $response = $this->postJson("{$this->apiBase}/reset-password", $data);
+        $response = $this->postJson("{$this->apiBase}/forgot-password", $data);
 
         #esperando
         $response->assertStatus(422);
@@ -57,7 +57,7 @@ class ResetPasswordTest extends TestCase
         $data = ['email' => 'notanemail'];
 
         # haciendo
-        $response = $this->postJson("{$this->apiBase}/reset-password", $data);
+        $response = $this->postJson("{$this->apiBase}/forgot-password", $data);
 
         #esperando
         $response->assertStatus(422);
@@ -72,7 +72,7 @@ class ResetPasswordTest extends TestCase
         $data = ['email' => 'notexisting@example.com'];
 
         # haciendo
-        $response = $this->postJson("{$this->apiBase}/reset-password", $data);
+        $response = $this->postJson("{$this->apiBase}/forgot-password", $data);
 
         #esperando
         $response->assertStatus(422);
@@ -159,7 +159,7 @@ class ResetPasswordTest extends TestCase
         $data = ['email' => 'example@example.com'];
 
         # haciendo
-        $response = $this->postJson("{$this->apiBase}/reset-password", $data);
+        $response = $this->postJson("{$this->apiBase}/forgot-password", $data);
 
         #esperando
         $response->assertStatus(200);
@@ -172,7 +172,7 @@ class ResetPasswordTest extends TestCase
             parse_str($parts['query'], $query);
             $this->token = $query['token'];
             $this->email = $query['email'];
-            return str_contains($url, 'http://front.app/reset-password?token=');
+            return str_contains($url, config('app.frontDomain').'/reset-password?token=');
         });
     }
 

@@ -67,6 +67,31 @@ class ShowMenuTest extends TestCase
     }
 
     #[Test]
+    public function an_authenticated_user_cannot_see_a_menu_of_another_user(): void
+    {
+        //$this->withoutExceptionHandling();
+        $menu       = Menu::factory()->create();
+
+        $response =
+            $this->apiAs($this->user, 'get',
+                "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$menu->id}");
+        $response->assertStatus(404);
+    }
+
+    #[Test]
+    public function an_authenticated_user_cannot_see_a_menu_of_another_restaurant(): void
+    {
+        //$this->withoutExceptionHandling();
+        $restaurant = Restaurant::factory()->create(['user_id' => $this->user->id]);
+        $menu       = Menu::factory()->create(['restaurant_id' => $restaurant->id]);
+
+        $response =
+            $this->apiAs($this->user, 'get',
+                "{$this->apiBase}/restaurants/{$this->restaurant->id}/menus/{$menu->id}");
+        $response->assertStatus(404);
+    }
+
+    #[Test]
     public function a_unauthenticated_user_cannot_see_any_menu(): void
     {
         //$this->withoutExceptionHandling();

@@ -9,6 +9,6 @@ En este curso aprenderemos a crear una API Rest en Laravel 11 usando TDD, Aprend
 ### Pasos para correr en docker
 
 * Copiar el archivo `.env.example` a `.env`
-* Ejecuta el comando `docker-compose up -d --build --remove-orphans`\
+* Ejecuta el comando `docker-compose up -d --build --remove-orphans`
 * En el contenedor debera aparecer la cadena: *ready to handle connections*
 
